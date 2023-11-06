@@ -56,10 +56,10 @@ class _ProductHomePageState extends State<ProductHomePage> {
     return ListView.builder(
       itemCount: products.length,
       itemBuilder: (context, index) => ListTile(
-        leading: CircleAvatar(child: Text((products[index].id +1).toString())),
+        leading: CircleAvatar(child: Text(products[index].id.toString())),
         title: Text(products[index].name),
         subtitle: Text(products[index].price.toString()),
-        trailing: Text(products[index].price.toString()),
+        trailing: Text("${products[index].quantity.toString()} items"),
       ),
     );
   }

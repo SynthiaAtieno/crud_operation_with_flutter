@@ -9,7 +9,7 @@ class Products {
   final int id;
   final String name;
   final int quantity;
-  final int price;
+  final double price;
 
   Products({
     required this.id,
