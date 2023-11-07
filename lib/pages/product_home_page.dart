@@ -35,6 +35,7 @@ class _ProductHomePageState extends State<ProductHomePage> {
         appBar: AppBar(
           title: const Text("Product Page"),
           centerTitle: true,
+          elevation: 0,
           actions: [
             IconButton(
                 onPressed: () => {
