@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:crud_operation_spring/model/product.dart';
 import 'package:crud_operation_spring/provider/product_provider.dart';
 import 'package:crud_operation_spring/widgets/text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 
 class ProductHomePage extends StatefulWidget {
@@ -13,10 +17,10 @@ class ProductHomePage extends StatefulWidget {
 }
 
 class _ProductHomePageState extends State<ProductHomePage> {
-
   TextEditingController nameController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
+
   @override
   void initState() {
     final provider = Provider.of<ProductProvider>(context, listen: false);
@@ -46,28 +50,34 @@ class _ProductHomePageState extends State<ProductHomePage> {
                                   child: Column(
                                     children: [
                                       TextForm(
-                                        controller: nameController, text: 'Product Name',
-                                      ),
-
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      TextForm(
-                                        controller: quantityController, text: 'Product Quantity',
+                                        controller: nameController,
+                                        text: 'Product Name',
                                       ),
                                       const SizedBox(
                                         height: 10,
                                       ),
                                       TextForm(
-                                        controller: priceController, text: 'Product Price',
+                                        controller: quantityController,
+                                        text: 'Product Quantity',
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      TextForm(
+                                        controller: priceController,
+                                        text: 'Product Price',
                                       ),
                                       const SizedBox(
                                         height: 10,
                                       ),
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
                                         children: [
-                                          ElevatedButton(onPressed: ()=> saveToDb(), child: const Text("Save"),),
+                                          ElevatedButton(
+                                            onPressed: () => saveToDb(),
+                                            child: const Text("Save"),
+                                          ),
                                         ],
                                       ),
                                     ],
@@ -125,9 +135,45 @@ class _ProductHomePageState extends State<ProductHomePage> {
     );
   }
 
-  saveToDb() {
-    print(nameController.text);
-    print(quantityController.text);
-    print(priceController.text);
+  void showFlashError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
+  }
+
+  saveToDb() async {
+    if (nameController.text.isNotEmpty &&
+        quantityController.text.isNotEmpty &&
+        priceController.text.isNotEmpty) {
+      try {
+        final uri = Uri.parse("http://192.168.3.1:8080/api/addProduct");
+        Response response = await http.post(uri,
+            headers: {"Content-Type": "application/json"},
+            body: jsonEncode({
+              "name": nameController.text,
+              "price": priceController.text,
+              "quantity": quantityController.text,
+            }));
+        if (response.statusCode == 200) {
+          showFlashError("Product created successfully");
+          nameController.clear();
+          quantityController.clear();
+          priceController.clear();
+          Navigator.pop(context);
+        } else {
+          showFlashError(response.statusCode.toString());
+        }
+        /*
+      print(nameController.text);
+      print(quantityController.text);
+      print(priceController.text);*/
+      } catch (e) {
+        showFlashError(e.toString());
+      }
+    } else {
+      showFlashError("Please fill all the fields");
+    }
   }
 }
