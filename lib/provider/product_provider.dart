@@ -27,7 +27,7 @@ class ProductProvider extends ChangeNotifier{
     }
     catch(e){
       //print(e);
-      return e.toString();
+      e.toString();
     }
     isLoading = false;
     notifyListeners();

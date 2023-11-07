@@ -15,12 +15,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => PetsProvider(),
+      create: (context) => ProductProvider(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(primarySwatch: Colors.blue ),
-        // home: const ProductHomePage(),
-         home: const HomePage(),
+         home: const ProductHomePage(),
+         //home: const HomePage(),
       ),
     );
   }
